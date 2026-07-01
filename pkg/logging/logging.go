@@ -7,21 +7,21 @@ import (
 	"log"
 	"log/slog"
 
-	"github.com/faith/color"
+	"github.com/fatih/color"
 )
 
 type PrettyHandlerOptions struct {
 	SlogOpts slog.HandlerOptions
 }
 
-type PrettyHandler struct{
-	slog.HandlerOptions
-	l *log.logger
+type PrettyHandler struct {
+	slog.Handler
+	l *log.Logger
 }
 
-func (h * PrettyHandler) Handle(ctx contect.Context, r slog.Record) error{
+func (h *PrettyHandler) Handle(ctx context.Context, r slog.Record) error {
 	level := r.Level.String() + ":"
-	Switch r.Level{
+	switch r.Level {
 	case slog.LevelDebug:
 		level = color.MagentaString(level)
 	case slog.LevelInfo:
@@ -33,7 +33,7 @@ func (h * PrettyHandler) Handle(ctx contect.Context, r slog.Record) error{
 	}
 
 	fields := make(map[string]any, r.NumAttrs())
-	r.Attrs(func(a slog.Attr) bool{
+	r.Attrs(func(a slog.Attr) bool {
 		fields[a.Key] = a.Value.Any()
 		return true
 	})
@@ -43,12 +43,12 @@ func (h * PrettyHandler) Handle(ctx contect.Context, r slog.Record) error{
 
 	// Only print fields if there are any
 	if len(fields) > 0 {
-		b, err :=json.Marshal(fields)
+		b, err := json.Marshal(fields)
 		if err != nil {
 			return err
 		}
 		h.l.Println(timeStr, level, msg, color.WhiteString(string(b)))
-	}else {
+	} else {
 		// Skip printing fields part if empty
 		h.l.Println(timeStr, level, msg)
 	}
@@ -61,8 +61,8 @@ func NewPrettyHandler(
 	opts PrettyHandlerOptions,
 ) *PrettyHandler {
 	h := &PrettyHandler{
-		Handler: slog.NewJSONHandler(out ,&opts.SlogOpts),
-		l:		 log.New(out, "", 0),
+		Handler: slog.NewJSONHandler(out, &opts.SlogOpts),
+		l:       log.New(out, "", 0),
 	}
 	return h
 }
