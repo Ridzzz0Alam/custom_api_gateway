@@ -22,3 +22,28 @@ server:
   registry:
     hearbeatInterval: 15
     services:
+      example:
+        name: "example"
+        addr: "localhost:3000"
+        whitelist: 
+          - "ALL"
+        health:
+          enabled: true
+          anonymous: true
+          secret: "path/to/secret"
+          routes: 
+            - "/private"
+        cache:
+          enabled: false
+          expirationInterval: 60
+          cleanupInterval: 60
+        circiutBreaker:
+          enabled: true
+          timeout: 5
+          interval: 0
+          failureRatio: 0.5
+        rateLimiter:
+          enabled: true
+          rate: 10
+          burst: 10
+          cleanupInterval: 3600
