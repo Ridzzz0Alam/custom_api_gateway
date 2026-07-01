@@ -55,3 +55,14 @@ func (h * PrettyHandler) Handle(ctx contect.Context, r slog.Record) error{
 
 	return nil
 }
+
+func NewPrettyHandler(
+	out io.Writer,
+	opts PrettyHandlerOptions,
+) *PrettyHandler {
+	h := &PrettyHandler{
+		Handler: slog.NewJSONHandler(out ,&opts.SlogOpts),
+		l:		 log.New(out, "", 0),
+	}
+	return h
+}
