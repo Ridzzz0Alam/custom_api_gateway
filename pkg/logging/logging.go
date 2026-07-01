@@ -42,5 +42,16 @@ func (h * PrettyHandler) Handle(ctx contect.Context, r slog.Record) error{
 	msg := color.CyanString(r.Message)
 
 	// Only print fields if there are any
-	
+	if len(fields) > 0 {
+		b, err :=json.Marshal(fields)
+		if err != nil {
+			return err
+		}
+		h.l.Println(timeStr, level, msg, color.WhiteString(string(b)))
+	}else {
+		// Skip printing fields part if empty
+		h.l.Println(timeStr, level, msg)
+	}
+
+	return nil
 }
