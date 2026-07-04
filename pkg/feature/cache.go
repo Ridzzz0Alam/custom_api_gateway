@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/ArmaanKatyal/porta/pkg/config"
-
 	"github.com/patrickmn/go-cache"
 )
 
@@ -22,21 +21,22 @@ type CacheHandler struct {
 	cache              *cache.Cache
 }
 
-func NewCacheHdnler(conf *config.CacheSettings) *CacheHandler {
+func NewCacheHandler(conf *config.CacheSettings) *CacheHandler {
 	// If 0, set to default values
-
 	if conf.ExpirationInterval == 0 {
 		conf.ExpirationInterval = 5
 	}
-	if conf.Cleanupinterval == 0 {
-		conf.Cleanupinterval = 10
+	if conf.CleanupInterval == 0 {
+		conf.CleanupInterval = 10
 	}
 	return &CacheHandler{
 		Enabled:            conf.Enabled,
 		ExpirationInterval: conf.ExpirationInterval,
-		CleanupInterval:    conf.Cleanupinterval,
-		cache: cache.New(time.Duration(conf.ExpirationInterval)*time.Second,
-			time.Duration(conf.Cleanupinterval)*time.Second),
+		CleanupInterval:    conf.CleanupInterval,
+		cache: cache.New(
+			time.Duration(conf.ExpirationInterval)*time.Second,
+			time.Duration(conf.CleanupInterval)*time.Second,
+		),
 	}
 }
 
